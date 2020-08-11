@@ -47,21 +47,31 @@ namespace KusanagiBot
             if (!string.IsNullOrEmpty(res)) await um.Channel.SendMessageAsync(res);
         }
 
+        private string[] defaultCommands = new []
+        {
+            "!add",
+            "!delete",
+            "!edit"
+        };
+
         async Task<bool> DefaultCommand(SocketUserMessage m, string[] msg)
         {
             //もっとスマートなやり方ないかなぁ
-            if (msg[0] == "!list" && Command.Commands.Keys.Count != 0)
+            if (msg[0] == "!list")
             {
+                var hasCmd = Command.Commands.Keys.Count != 0;
                 var eb = new EmbedBuilder()
                 {
                     Color = Color.DarkBlue,
                     Title = "Command List",
-                    Description = Command.Commands.Keys.Aggregate((a, b) => $"{a}\n{b}").ToString()
+                    Description = hasCmd
+                        ? Command.Commands.Keys.Aggregate((a, b) => $"{a}\n{b}").ToString()
+                        : "コマンドはありません。"
                 };
                 await m.Channel.SendMessageAsync(embed: eb.Build());
                 return true;
             }
-            if (msg.Length < 2)
+            if (msg.Length < 2 && defaultCommands.Any(x => x == msg[0]))
             {
                 await m.Channel.SendMessageAsync("コマンドの引数が正しくありません。");
                 return false;
@@ -92,7 +102,7 @@ namespace KusanagiBot
                     {
                         _ = Command.TryEditCommand(ss[0], ss[1])
                             ? await m.Channel.SendMessageAsync($"{ss[0]} => {ss[1]}")
-                            : await m.Channel.SendMessageAsync($"コマンド追加に失敗しました。なんででしょうね？");
+                            : await m.Channel.SendMessageAsync($"コマンド編集に失敗しました。なんででしょうね？");
                     }
                     else await m.Channel.SendMessageAsync("!edit [command名] [response]");
                     break;
