@@ -1,6 +1,7 @@
 ﻿using ConsoleAppFramework;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KusanagiBot
 {
@@ -8,7 +9,11 @@ namespace KusanagiBot
     {
         static async Task Main(string[] args)
         {
-            await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<KusanagiBot>(args);
+            await Host.CreateDefaultBuilder()
+                .ConfigureServices((hostContent, services) =>
+                {
+                    services.Configure<Config>(hostContent.Configuration);
+                }).RunConsoleAppFrameworkAsync<KusanagiBot>(args);
         }
     }
 }
