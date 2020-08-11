@@ -49,8 +49,25 @@ namespace KusanagiBot
 
         async Task<bool> DefaultCommand(SocketUserMessage m, string[] msg)
         {
-            var f = true;
             //もっとスマートなやり方ないかなぁ
+            if (msg[0] == "!list" && Command.Commands.Keys.Count != 0)
+            {
+                var eb = new EmbedBuilder()
+                {
+                    Color = Color.DarkBlue,
+                    Title = "Command List",
+                    Description = Command.Commands.Keys.Aggregate((a, b) => $"{a}\n{b}").ToString()
+                };
+                await m.Channel.SendMessageAsync(embed: eb.Build());
+                return true;
+            }
+            if (msg.Length < 2)
+            {
+                await m.Channel.SendMessageAsync("コマンドの引数が正しくありません。");
+                return false;
+            }
+
+            var f = true;
             switch (msg[0])
             {
                 case "!add":
@@ -61,11 +78,11 @@ namespace KusanagiBot
                             ? await m.Channel.SendMessageAsync($"コマンド {s[0]} が追加されました。")
                             : await m.Channel.SendMessageAsync($"コマンド追加に失敗しました。なんででしょうね？");
                     }
-                    else await m.Channel.SendMessageAsync("!add [command名] [response] でつかうんですよ");
+                    else await m.Channel.SendMessageAsync("!add [command名] [response]");
                     break;
 
                 case "!delete":
-                    _ = Command.TryDeleteCommand(msg[0])
+                    _ = Command.TryDeleteCommand(msg[1])
                         ? await m.Channel.SendMessageAsync($"コマンド {msg[0]} が削除されました。かなしい。")
                         : await m.Channel.SendMessageAsync($"コマンド削除に失敗しました。");
                     break;
@@ -77,16 +94,7 @@ namespace KusanagiBot
                             ? await m.Channel.SendMessageAsync($"{ss[0]} => {ss[1]}")
                             : await m.Channel.SendMessageAsync($"コマンド追加に失敗しました。なんででしょうね？");
                     }
-                    else await m.Channel.SendMessageAsync("!add [command名] [response] でつかうんですよ");
-                    break;
-                case "!list":
-                    var eb = new EmbedBuilder()
-                    {
-                        Color = Color.DarkBlue,
-                        Title = "Command List",
-                        Description = Command.Commands.Keys.Aggregate((a, b) => $"{a}\n{b}").ToString()
-                    };
-                    await m.Channel.SendMessageAsync(embed: eb.Build());
+                    else await m.Channel.SendMessageAsync("!edit [command名] [response]");
                     break;
                 default:
                     f = false;
