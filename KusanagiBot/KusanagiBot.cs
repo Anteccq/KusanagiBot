@@ -43,8 +43,8 @@ namespace KusanagiBot
             var msgArray = message.Content.Split(new char[] { ' ', '　' }, 2, StringSplitOptions.RemoveEmptyEntries);
             if (msgArray.Length == 0) return;
             if (await DefaultCommand(um, msgArray)) return;
-            var t = Command.FindCommand(msgArray[0]);
-            if (string.IsNullOrEmpty(t)) await um.Channel.SendMessageAsync(t);
+            var res = Command.FindCommand(msgArray[0]);
+            if (!string.IsNullOrEmpty(res)) await um.Channel.SendMessageAsync(res);
         }
 
         async Task<bool> DefaultCommand(SocketUserMessage m, string[] msg)
