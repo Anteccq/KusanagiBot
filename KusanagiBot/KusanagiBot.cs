@@ -27,7 +27,7 @@ namespace KusanagiBot
                 return Task.CompletedTask;
             };
 
-
+            client.MessageReceived += MessageHandle;
             await client.LoginAsync(TokenType.Bot, _config.Value.DiscordToken);
             await client.StartAsync();
 
