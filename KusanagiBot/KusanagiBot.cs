@@ -13,6 +13,9 @@ namespace KusanagiBot
     public class KusanagiBot : ConsoleAppBase
     {
         public KusanagiBot()
+        {
+
+        }
         public async Task ExecuteAsync()
         {
             var client = new DiscordSocketClient();
