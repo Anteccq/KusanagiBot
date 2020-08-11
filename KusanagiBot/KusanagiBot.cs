@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ConsoleAppFramework;
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using KusanagiBot.Model;
 using Microsoft.Extensions.Options;
@@ -40,7 +41,7 @@ namespace KusanagiBot
         {
             if (!(message is SocketUserMessage um) || um.Author.IsBot) return;
 
-            var msgArray = message.Content.Split(new char[] { ' ', '　' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            var msgArray = message.Content.BisectByBlank();
             if (msgArray.Length == 0) return;
             if (await DefaultCommand(um, msgArray)) return;
             var res = Command.FindCommand(msgArray[0]);
@@ -56,6 +57,7 @@ namespace KusanagiBot
 
         async Task<bool> DefaultCommand(SocketUserMessage m, string[] msg)
         {
+            async Task<RestUserMessage> SendAsync(string　s) => await m.Channel.SendMessageAsync(s);
             //もっとスマートなやり方ないかなぁ
             if (msg[0] == "!list")
             {
@@ -73,7 +75,7 @@ namespace KusanagiBot
             }
             if (msg.Length < 2 && defaultCommands.Any(x => x == msg[0]))
             {
-                await m.Channel.SendMessageAsync("コマンドの引数が正しくありません。");
+                await SendAsync("コマンドの引数が正しくありません。");
                 return false;
             }
 
@@ -81,30 +83,33 @@ namespace KusanagiBot
             switch (msg[0])
             {
                 case "!add":
-                    var s = msg[1].Split(new char[] { ' ', '　' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var s = msg[1].BisectByBlank();
                     if (s.Length == 2)
                     {
-                        _ = Command.TryAddCommand(s[0], s[1])
-                            ? await m.Channel.SendMessageAsync($"コマンド {s[0]} が追加されました。")
-                            : await m.Channel.SendMessageAsync($"コマンド追加に失敗しました。なんででしょうね？");
+                        await SendAsync(
+                            Command.TryAddCommand(s[0], s[1])
+                                ? $"コマンド {s[0]} が追加されました。"
+                                : $"コマンド追加に失敗しました。なんででしょうね？");
                     }
                     else await m.Channel.SendMessageAsync("!add [command名] [response]");
                     break;
 
                 case "!delete":
-                    _ = Command.TryDeleteCommand(msg[1])
-                        ? await m.Channel.SendMessageAsync($"コマンド {msg[0]} が削除されました。かなしい。")
-                        : await m.Channel.SendMessageAsync($"コマンド削除に失敗しました。");
+                    await SendAsync(
+                        Command.TryDeleteCommand(msg[1])
+                            ? $"コマンド {msg[0]} が削除されました。かなしい。"
+                            : $"コマンド削除に失敗しました。");
                     break;
                 case "!edit":
-                    var ss = msg[1].Split(new char[] { ' ', '　' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var ss = msg[1].BisectByBlank();
                     if (ss.Length == 2)
                     {
-                        _ = Command.TryEditCommand(ss[0], ss[1])
-                            ? await m.Channel.SendMessageAsync($"{ss[0]} => {ss[1]}")
-                            : await m.Channel.SendMessageAsync($"コマンド編集に失敗しました。なんででしょうね？");
+                        await SendAsync(
+                            Command.TryEditCommand(ss[0], ss[1])
+                                ? $"{ss[0]} => {ss[1]}"
+                                : $"コマンド編集に失敗しました。なんででしょうね？");
                     }
-                    else await m.Channel.SendMessageAsync("!edit [command名] [response]");
+                    else await SendAsync("!edit [command名] [response]");
                     break;
                 default:
                     f = false;
