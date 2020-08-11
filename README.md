@@ -2,7 +2,7 @@
 > A Discord Bot for custom command.
 
 カスタムコマンドを作るためのDiscord用Botです。  
-[Screenshot](Images/KusanagiBot.png)
+![Screenshot](Images/KusanagiBot.png)
 
 コマンドの形は自由です。  
 コマンドに絵文字を含めることもできます。
