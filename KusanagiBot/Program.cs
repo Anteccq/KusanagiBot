@@ -14,7 +14,7 @@ namespace KusanagiBot
     {
         static async Task Main(string[] args)
         {
-            await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync(args);
+            await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
         }
 
         public async Task ExecuteAsync()
