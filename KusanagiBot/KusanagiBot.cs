@@ -44,7 +44,7 @@ namespace KusanagiBot
             if (msgArray.Length == 0) return;
             if (await DefaultCommand(um, msgArray)) return;
             var t = Command.FindCommand(msgArray[0]);
-            if (string.IsNullOrEmpty(t)) await um.Channel.SendMessageAsync(t);
+            if (!string.IsNullOrEmpty(t)) await um.Channel.SendMessageAsync(t);
         }
 
         async Task<bool> DefaultCommand(SocketUserMessage m, string[] msg)
