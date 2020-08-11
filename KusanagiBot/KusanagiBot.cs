@@ -7,14 +7,16 @@ using ConsoleAppFramework;
 using Discord;
 using Discord.WebSocket;
 using KusanagiBot.Model;
+using Microsoft.Extensions.Options;
 
 namespace KusanagiBot
 {
     public class KusanagiBot : ConsoleAppBase
     {
-        public KusanagiBot()
+        private IOptions<Config> _config;
+        public KusanagiBot(IOptions<Config> config)
         {
-
+            _config = config;
         }
         public async Task ExecuteAsync()
         {
@@ -26,7 +28,7 @@ namespace KusanagiBot
             };
 
 
-            await client.LoginAsync(TokenType.Bot, "token");
+            await client.LoginAsync(TokenType.Bot, _config.Value.DiscordToken);
             await client.StartAsync();
 
             await Task.Delay(-1, Context.CancellationToken);
