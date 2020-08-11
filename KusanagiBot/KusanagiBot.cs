@@ -97,7 +97,7 @@ namespace KusanagiBot
                 case "!delete":
                     await SendAsync(
                         Command.TryDeleteCommand(msg[1])
-                            ? $"コマンド {msg[0]} が削除されました。かなしい。"
+                            ? $"コマンド {msg[1]} が削除されました。かなしい。"
                             : $"コマンド削除に失敗しました。");
                     break;
                 case "!edit":
