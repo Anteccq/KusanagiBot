@@ -7,7 +7,7 @@ namespace KusanagiBot.Model
 {
     public class Command
     {
-        public static Dictionary<string, string> Commands { get; set; }
+        public static Dictionary<string, string> Commands { get; set; } = new Dictionary<string, string>();
 
         public static string FindCommand(string command)
         {
