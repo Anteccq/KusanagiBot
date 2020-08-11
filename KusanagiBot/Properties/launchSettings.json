@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "KusanagiBot": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
